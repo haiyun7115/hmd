@@ -1,6 +1,7 @@
 /*
  * @description 本库只做模板和模板相关的一些方法
  * @version hmd v3.0.0
+ * @time 2018.7.26
  * @author 冀海云
 */
 
