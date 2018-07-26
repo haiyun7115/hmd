@@ -1,0 +1,148 @@
+<div class="main-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="title">充值明细</h1>
+				<div class="main-search">
+					<form>
+						<p style="margin-bottom:20px;"><label for="textfield">充值金额:</label>
+							<input type="text" reg='float' name="textfield" id="textfield" style="width:130px;">	- <input type="text" name="textfield" reg='float' id="textfield1" style="width:130px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="textfield">充值时间:</label>
+							<input type="text" datepicker='datepicker' readonly name="start" id="start" style="width:145px;">	- <input type="text" readonly name="end" datepicker='datepicker' id="end" style="width:145px;">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="">充值结果:</label>
+							<select name="select" id="select" style="width:125px;">
+								<option value="">请选择</option>
+								<option value="0">支付中</option>
+								<option value="1">成功</option>
+								<option value="2">失败</option>
+							</select>
+						</p>
+						<p class="text-right">
+							<button class="btn btn-submit" id="_submit" type="button">查询</button>&nbsp;&nbsp;<button class="btn btn-reset" id="_reset" type="reset">重置</button>
+						</p>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="table-box table-user">
+				<table class="table table-hover" id="table_form">
+					<thead>
+					<tr>
+						<th width="20%">姓名</th>
+						<th width="24%">合同编号</th>
+						<th width="20%">充值金额</th>
+						<th width="20%">充值时间</th>
+						<th>充值结果</th>
+					</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
+			</div>			
+			<div style="text-align: center;">
+				<ul class="pagination" id="pagination"></ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	!function(){
+		var methods = hmd.methods,
+			service = hmd.service;
+		/*充值明细页面渲染*/
+		function render(msg){
+			$('#table_form').find('tbody').html(methods.generateStringByTemplate({
+				id : '_recharge',
+				params : {
+					'%id':'customerName',
+					'%contract':'contractCode',
+					'%username':'payAmount',
+					'%money':'payTime',
+					'%result':'payStatus'
+				},
+				data : msg
+			}))
+		}
+		/*充值明细页面-点击查询按钮调接口*/
+		$('#_submit').click(function(){
+            fetchData({
+				status : 'init'
+			})
+		});
+
+		/*充值明细页面-点击重置按钮清空输入*/
+		$("#_reset").click(function () {
+            $("#textfield").val('');
+            $("#textfield1").val('');
+            $("#start").val('');
+            $("#end").val('');
+            $("#select").val('');
+        });
+		/*充值明细页面接口*/
+		function fetchData(obj) {
+            obj = obj || {};
+            var status = obj.status || 'other',
+				num = obj.num || 1;
+			service.payDetail({
+				token: $.cookie("data_token"),
+				pageSize: 10,
+				currentPage: num,
+                payAmountBegin:$("#textfield").val(),
+                payAmountEnd:$("#textfield1").val(),
+                payTimeBegin:$("#start").val(),
+                payTimeEnd:$("#end").val(),
+                payStatus:$("#select").val()
+			}, function (data) {
+				if (data.code === "2000") {
+					var d = data.payDetailList;
+					for (var i = 0, len = d.length; i < len; i++) {
+						if (d[i].payStatus == "0") {
+							d[i].payStatus = "支付中";
+						}
+						if (d[i].payStatus == "1") {
+							d[i].payStatus = "成功";
+						}
+						if (d[i].payStatus == "2") {
+							d[i].payStatus = "失败";
+						}
+//						d[i].payTime = d[i].payTime.substring(0, 10);
+					}
+					render(d);
+				}
+				if(status === 'init'){
+					pagination(data.totalNum)
+				}
+
+			})
+
+		}
+		/*分页组件*/
+		function pagination(num){
+            methods.pagination({
+                totalPages:+num,
+                callback:function (num,type) {
+					fetchData({
+						num : num
+					});
+                }
+            })
+		}
+		/*时间插件*/
+		function init(){
+            fetchData({
+                status : 'init'
+            });
+            methods.timePicker({
+                start : 'start',
+                end : 'end'
+            });
+		}
+		init();		
+	}()
+</script>

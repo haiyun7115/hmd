@@ -1,0 +1,72 @@
+<div class="main-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1 class="title">合同信息</h1>
+				<div class="main-alert">
+				    <span class="alert alert-warning" role="alert"><i></i>信息确认无误后，请根据人工提示金额进行充值</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="table-box table-user">
+				<table class="table table-hover" id="table_form">
+					<thead>
+					<tr>
+						<th width="27.5%">身份证号码</th>
+						<th width="23.8%">合同编号</th>
+						<th width="17.5%">姓名</th>
+						<th width="15.5%">期供</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	!function(){
+		var methods = hmd.methods,
+			service = hmd.service
+		function fetchData(){
+			/*渲染合同信息页面的接口*/
+			service.contract(function(data){
+			    if(data.code === "2000"){
+                    $('#table_form').find('tbody').html(methods.generateStringByTemplate({
+                        id : '_contract',
+                        params : {
+                            '%id':'idNumber',
+                            '%contract':'contractCode',
+                            '%username':'customerName',
+                            '%money':'monthRepay'
+                        },
+                        data :data.contractList
+                    }))
+				}
+			});
+
+			/*合同信息页面点击充值调接口跳转url*/
+			$(".container").on("click",".recharge",function(){
+                service.generateUrl(function(data){
+                    if(data.code === "2000"){
+						window.open(data.url);
+					}
+                })
+			});
+
+		}
+
+		function init() {
+            fetchData();
+        }
+		init();
+	}();
+</script>

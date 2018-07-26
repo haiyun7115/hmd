@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <title>客户充值系统</title>
+    <link rel="stylesheet" type="text/css" href="./style/css/bootstrap.min.css"/>
+     <link rel="stylesheet" type="text/css" href="./style/css/jquery-ui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./style/css/style.css"/>
+    <!--[if lt IE 9]>
+    <script src="./script/Libs/html5shiv.min.js"></script>
+    <script src="./script/Libs/respond.js"></script>
+    <![endif]-->
+  </head>
+  <body>    
+    <div id="root"></div>
+    <script type="text/template" id="content">
+      <h-head />
+      <h-main />
+      <h-footer />
+    </script>
+    <script type="text/template" id="_footer">
+      <h-footer name=10 />
+      <h-head />
+    </script>
+    <script type="text/template" id="_login_temp">
+      <h-login name=123 id=aa />
+    </script>
+    <script type="text/template" id="_contract">
+      <tr>
+        <td scope="row">%id</td>
+        <td scope="row"><span>%contract</span></td>
+        <td scope="row">%username</td>
+        <td scope="row">%money</td>
+        <td><a href="javascript:;" contract='%id' contractCode="%contract" class="btn btn-submit recharge">充值</a></td>
+      </tr>
+    </script>
+    <script type="text/template" id="_recharge">
+      <tr>
+        <td>%id</td>
+        <td><span>%contract</span></td>
+        <td>%username</td>
+        <td>%money</td>
+        <td>%result</td>
+      </tr>
+    </script>
+
+    <script type="text/template" id='__temp_html'>
+        <ul name='oul'>
+           {
+            var _arr = [];
+            for(var i=0;i<this.p;i++){
+              _arr.push('<li>页数 '+i+'</li>')
+            }
+            return _arr;
+           }
+        </ul>
+    </script>
+    <script src="./script/Libs/jquery.1.9.min.js"></script>
+    <script src="./script/Libs/jquery.cookie-min.js"></script>
+    <script src="./script/hmd.js"></script>
+    <script src="./script/Controller/index.js"></script>
+  </body>
+</html>
