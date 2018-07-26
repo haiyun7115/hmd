@@ -45,12 +45,7 @@ hmd.extend(hmd.methods,{
 			obj[_key] = _value;
 		});
 		return obj;
-	},
-
-	manageHtmlTemplate : function(obj){
-		obj = obj || {};
-		var data = obj.data;
-	},
+	},	
 	/*
 	 * @description 将模板转化成页面串
 	*/
